@@ -17,8 +17,10 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 int lastx, lasty, x, y;		//GLOBAL VARIABLES used in drawing.
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
