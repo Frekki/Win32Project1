@@ -6,10 +6,14 @@
 #define IDS_APP_TITLE			103
 
 #define IDR_MAINFRAME			128
+#define IDD_MYBUTTON				100	//
+#define IDD_SAVEBOX				101	//
 #define IDD_WIN32PROJECT1_DIALOG	102
 #define IDD_ABOUTBOX			103
 #define IDM_ABOUT				104
 #define IDM_EXIT				105
+#define IDM_SAVE				106 //
+#define IDM_BUTTON				110 //
 #define IDI_WIN32PROJECT1			107
 #define IDI_SMALL				108
 #define IDC_WIN32PROJECT1			109
