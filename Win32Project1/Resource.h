@@ -17,6 +17,9 @@
 #define IDM_ELLIPSE				111	//
 #define IDM_LINE				112	//
 #define IDM_SAVE_TO				113	//
+#define IDM_SET_COLOR			114 //
+#define IDC_GET					115	//
+#define ID_CANCEL				116	//
 #define IDI_WIN32PROJECT1			107
 #define IDI_SMALL				108
 #define IDC_WIN32PROJECT1			109

@@ -3,11 +3,15 @@
 
 #include "stdafx.h"
 #include "Win32Project1.h"
+#include <CommCtrl.h>
 
 #define MAX_LOADSTRING 100
 
 bool bDrawLine = false;
 bool bDrawEllipse = false;
+
+HWND button;
+//HWND hWndTrack;
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -20,6 +24,7 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 int lastx, lasty, x, y;		//GLOBAL VARIABLES used in drawing.
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+HWND WINAPI CreateTrackbar(HWND, UINT, UINT, UINT, UINT);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -78,6 +83,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		hInstance,						// program instance handle
 		NULL);							// creation parameters
 										//ShowWindow(hwnd, nCmdShow);
+
 	UpdateWindow(hwnd);
 
 	// Main message loop:
@@ -92,6 +98,47 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	return (int)msg.wParam;
 }
+/*
+HWND WINAPI CreateTrackbar(
+	HWND hWnd,			//parrent window
+	UINT iMin,			//min value
+	UINT iMax,			//max value
+	UINT iSelMin,		//min value of the choosen object
+	UINT iSelMax		//max value of the choosen object
+)
+{
+	hWndTrack = CreateWindowEx(
+		0, 
+		TRACKBAR_CLASS,											//class name
+		TEXT("Color Set"),										//trackbar text
+		WS_CHILD|WS_VISIBLE|TBS_AUTOTICKS|TBS_ENABLESELRANGE,	//styles
+		10,10,													//x, y
+		255,30,													//wight, height
+		hWnd,													//parent
+		NULL,													//menu
+		hInst,													//instance
+		NULL													
+	);
+
+	SendMessage(hWndTrack, TBM_SETRANGE, 
+		(WPARAM)TRUE,								//redraw flag
+		(LPARAM)MAKELONG(iMin, iMax));				//min&max position
+
+	SendMessage(hWndTrack, TBM_SETPAGESIZE,
+		0, (LPARAM)10);								//new page size
+
+	SendMessage(hWndTrack, TBM_SETSEL,
+		(WPARAM)FALSE,								//redraw flag
+		(LPARAM)MAKELONG(iSelMin, iSelMax));
+
+	SendMessage(hWndTrack, TBM_SETPOS, 
+		(WPARAM)TRUE,								//redraw flag
+		(LPARAM)iSelMin);
+
+	SetFocus(hWndTrack);
+
+	return hWndTrack;
+}*/	//Slide bar class
 
 void line(HDC _hdc, int x1, int y1, int x2, int y2)		//This function draws line by the given four coordinates.
 {
@@ -173,6 +220,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	//case WM_INITDIALOG:
+	//{
+	//	CreateTrackbar(hWnd, 0, 100, 10, 50);
+	//	break;
+	//}
+
+	case WM_CREATE:
+	{
+		button = CreateWindow(TEXT("button"), TEXT("Set color"), WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 10, 10, 80, 20, hWnd, NULL, GetModuleHandle(NULL), NULL);
+		break;
+	}
+
 	case WM_COMMAND:
 	{
 		int wmId = LOWORD(wParam);
@@ -195,6 +254,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
+
+		/*switch (LOWORD(wParam))
+		{
+		case IDC_GET:
+			char buf[10];
+			int num = SendMessage(hWndTrack, TBM_GETPOS, 0, 0);
+			itoa(num, buf, 10);
+			MessageBox(NULL, buf, TEXT("Position"), MB_OK);
+			break;
+
+		case ID_CANCEL:
+			EndDialog(hWnd, 0);
+			return true;
+			break;
+		}*/
 	}
 	break;
 	case WM_LBUTTONDOWN:						//If Left mouse button is pressed
@@ -229,8 +303,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hLinePen = CreatePen(PS_SOLID, 7, qLineColor);
 			hPenOld = (HPEN)SelectObject(hdc, hLinePen);
 
-			MoveToEx(hdc, 100, 100, NULL);
-			LineTo(hdc, 500, 250);
+			MoveToEx(hdc, lastx, lasty, NULL);
+			LineTo(hdc, x, y);
 
 			SelectObject(hdc, hPenOld);
 			DeleteObject(hLinePen);
@@ -241,11 +315,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//Draw a blue ellipse
 			HPEN hEllipsePen;
 			COLORREF qEllipseColor;
-			qEllipseColor = RGB(0, 0, 255);	//Change whet got SetColor Function
+			qEllipseColor = RGB(0, 0, 255);	//Change when got SetColor Function
 			hEllipsePen = CreatePen(PS_SOLID, 3, qEllipseColor);
 			hPenOld = (HPEN)SelectObject(hdc, hEllipsePen);
 
-			Arc(hdc, 100, 100, 500, 250, 0, 0, 0, 0);
+			Arc(hdc, 100, 100, lastx, lasty, 0, 0, 0, 0);
 
 			SelectObject(hdc, hPenOld);
 			DeleteObject(hEllipsePen);
